@@ -98,10 +98,6 @@ const credito = ({
 				? capitalTotal
 				: -valores[periodo - anioInicial].capital,
 		}),
-		inversion: () => ({
-			components: [],
-			total: 0,
-		}),
 		gastosNoDes: () => ({
 			components: [],
 			total: 0,

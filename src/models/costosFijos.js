@@ -22,10 +22,6 @@ const costosFijos = ({ nombre, monto, porPeriodo = [] }) => {
 			components: [],
 			total: 0,
 		}),
-		inversion: () => ({
-			components: [],
-			total: 0,
-		}),
 		gastosNoDes: () => ({
 			components: [],
 			total: 0,

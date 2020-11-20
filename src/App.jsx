@@ -124,125 +124,155 @@ const App = () => {
 		ventas,
 	]
 
-	const periods = [...Array(periodos + 1)].map((_, periodoActual) => {
-		const ingAfecImp = {
-			components: actividades.reduce(
-				(acc, curr) => ({
-					...acc,
-					[curr.type]: curr.ingAfectImp(periodoActual).components,
-				}),
-				{}
-			),
-			total: actividades.reduce(
-				(acum, item) => acum + item.ingAfectImp(periodoActual).total,
-				0
-			),
-		}
+	const prefilteredPeriods = [...Array(periodos + 1)].map(
+		(_, periodoActual) => {
+			const ingAfecImp = {
+				components: actividades.reduce(
+					(acc, curr) => ({
+						...acc,
+						[curr.type]: [
+							...(acc[curr.type] || []),
+							...curr.ingAfectImp(periodoActual).components,
+						],
+					}),
+					{}
+				),
+				total: actividades.reduce(
+					(acum, item) => acum + item.ingAfectImp(periodoActual).total,
+					0
+				),
+			}
 
-		const descuentos = ventas.ingAfectImp(periodoActual).total * 0.05
-		const iibb = (ventas.ingAfectImp(periodoActual).total - descuentos) * 0.015
+			const descuentos = ventas.ingAfectImp(periodoActual).total * 0.05
+			const iibb =
+				(ventas.ingAfectImp(periodoActual).total - descuentos) * 0.015
 
-		const egAfecImp = {
-			components: actividades.reduce(
-				(acc, curr) => ({
-					...acc,
-					[curr.type]: curr.egAfectImp(periodoActual).components,
-				}),
-				{
-					'Descuentos e Ingresos Brutos': [
-						{ name: 'Descuentos Ventas', value: descuentos },
-						{ name: 'IIBB', value: iibb },
+			const egAfecImp = {
+				components: actividades.reduce(
+					(acc, curr) => ({
+						...acc,
+						[curr.type]: [
+							...(acc[curr.type] || []),
+							...curr.egAfectImp(periodoActual).components,
+						],
+					}),
+					{
+						'Descuentos e Ingresos Brutos': [
+							{ name: 'Descuentos Ventas', value: descuentos },
+							{ name: 'IIBB', value: iibb },
+						],
+					}
+				),
+				total: actividades.reduce(
+					(acum, item) => acum + item.egAfectImp(periodoActual).total,
+					0
+				),
+			}
+
+			const gastosNoDes = {
+				components: actividades.reduce(
+					(acc, curr) => ({
+						...acc,
+						[curr.type]: [
+							...(acc[curr.type] || []),
+							...curr.gastosNoDes(periodoActual).components,
+						],
+					}),
+					{}
+				),
+				total: actividades.reduce(
+					(acum, item) => acum + item.gastosNoDes(periodoActual).total,
+					0
+				),
+			}
+
+			const utilBrutas = {
+				components: [],
+				total:
+					ingAfecImp.total -
+					descuentos -
+					iibb -
+					egAfecImp.total -
+					gastosNoDes.total,
+			}
+
+			const utilNetas = {
+				components: {
+					Ganancias: [
+						{ name: 'Impuesto Ganancias', value: utilBrutas.total * ig },
 					],
-				}
-			),
-			total: actividades.reduce(
-				(acum, item) => acum + item.egAfectImp(periodoActual).total,
-				0
-			),
-		}
+				},
+				total: utilBrutas.total - utilBrutas.total * ig,
+			}
 
-		const gastosNoDes = {
-			components: actividades.reduce(
-				(acc, curr) => ({
-					...acc,
-					[curr.type]: curr.gastosNoDes(periodoActual).components,
-				}),
-				{}
-			),
-			total: actividades.reduce(
-				(acum, item) => acum + item.gastosNoDes(periodoActual).total,
-				0
-			),
-		}
+			const egNoAfecImp = {
+				components: actividades.reduce(
+					(acc, curr) => ({
+						...acc,
+						[curr.type]: [
+							...(acc[curr.type] || []),
+							...curr.egNoAfectImp(periodoActual).components,
+						],
+					}),
+					{}
+				),
+				total: actividades.reduce(
+					(acum, item) => acum + item.egNoAfectImp(periodoActual).total,
+					0
+				),
+			}
 
-		const utilBrutas = {
-			components: [],
-			total:
-				ingAfecImp.total -
-				descuentos -
-				iibb -
-				egAfecImp.total -
-				gastosNoDes.total,
-		}
+			const ff = {
+				components: [],
+				total:
+					utilNetas.total +
+					gastosNoDes.total +
+					egNoAfecImp.total +
+					gastosNoDes.total,
+			}
 
-		const utilNetas = {
-			components: {
-				Ganancias: [
-					{ name: 'Impuesto Ganancias', value: utilBrutas.total * ig },
-				],
+			return {
+				ingAfecImp,
+				egAfecImp,
+				gastosNoDes,
+				utilBrutas,
+				utilNetas,
+				egNoAfecImp,
+				ff,
+			}
+		}
+	)
+
+	const [firstPeriod, ...rest] = prefilteredPeriods
+
+	const filteredFirstPeriod = Object.fromEntries(
+		Object.entries(firstPeriod).map(([key, section]) => [
+			key, // key = egAfecImp
+			{
+				...section,
+				components: Object.fromEntries(
+					Object.entries(section.components).map(([name, group]) => [
+						name, // name = Inversiones
+						group.filter(
+							comp =>
+								prefilteredPeriods.reduce(
+									(acc, curr) =>
+										acc +
+										(
+											curr[key].components[name].find(
+												c => c.name === comp.name
+											) || {}
+										).value, // lo vuela si la suma de toda la fila es 0
+									0
+								) !== 0
+						),
+					])
+				),
 			},
-			total: utilBrutas.total - utilBrutas.total * ig,
-		}
+		])
+	)
 
-		const inversiones = {
-			components: actividades.reduce(
-				(acc, curr) => ({
-					...acc,
-					[curr.type]: curr.inversion(periodoActual).components,
-				}),
-				{}
-			),
-			total: actividades.reduce(
-				(acum, item) => acum + item.inversion(periodoActual).total,
-				0
-			),
-		}
-
-		const egNoAfecImp = {
-			components: actividades.reduce(
-				(acc, curr) => ({
-					...acc,
-					[curr.type]: curr.egNoAfectImp(periodoActual).components,
-				}),
-				{}
-			),
-			total: actividades.reduce(
-				(acum, item) => acum + item.egNoAfectImp(periodoActual).total,
-				0
-			),
-		}
-
-		const ff = {
-			components: [],
-			total:
-				utilNetas.total +
-				gastosNoDes.total +
-				egNoAfecImp.total +
-				inversiones.total +
-				gastosNoDes.total,
-		}
-
-		return {
-			ingAfecImp,
-			egAfecImp,
-			gastosNoDes,
-			utilBrutas,
-			utilNetas,
-			inversiones,
-			egNoAfecImp,
-			ff,
-		}
-	})
+	const periods = [filteredFirstPeriod, ...rest]
 
 	const Row = ({ name, keyName }) => (
 		<>
@@ -334,7 +364,6 @@ const App = () => {
 					<Row name="Gastos No Desembolsables" keyName="gastosNoDes" />
 					<Row name="Utilidades Brutas" keyName="utilBrutas" />
 					<Row name="Utilidades Netas" keyName="utilNetas" />
-					<Row name="Inversiones" keyName="inversiones" />
 					<Row name="Egresos No Afectados a Impuestos" keyName="egNoAfecImp" />
 					<Row name="Flujo de Fondos" keyName="ff" />
 				</tbody>

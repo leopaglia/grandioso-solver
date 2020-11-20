@@ -43,11 +43,7 @@ const inversion = ({
 			],
 			total: periodo === anioVenta + anioInicial - 1 ? costoDesinstalacion : 0,
 		}),
-		egNoAfectImp: () => ({
-			components: [],
-			total: 0,
-		}),
-		inversion: periodo => ({
+		egNoAfectImp: periodo => ({
 			components: [
 				{
 					name: `Inversion ${nombre}`,
