@@ -300,9 +300,9 @@ const App = () => {
 					</tr>
 				</thead>
 				<tbody>
-					<Row name="Ingresos Afectados por Impuestos" keyName="ingAfecImp" />
-					<Row name="Egresos Afectados por Impuestos" keyName="egAfecImp" />
-					<Row name="Gastos No Deducibles" keyName="gastosNoDes" />
+					<Row name="Ingresos Afectados a Impuestos" keyName="ingAfecImp" />
+					<Row name="Egresos Afectados a Impuestos" keyName="egAfecImp" />
+					<Row name="Gastos No Desembolsables" keyName="gastosNoDes" />
 					<Row name="Utilidades Brutas" keyName="utilBrutas" />
 					<Row name="Utilidades Netas" keyName="utilNetas" />
 					<Row name="Inversiones" keyName="inversiones" />
