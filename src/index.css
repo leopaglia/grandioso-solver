@@ -1,56 +1,56 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 
-  /* prevent scrollbar from displacing content when appears */
-  padding-left: calc(100vw - 100%); 
+	/* prevent scrollbar from displacing content when appears */
+	padding-left: calc(100vw - 100%);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
 }
 
 .collapse-link {
-  text-decoration: none;
-  color: black;
+	text-decoration: none;
+	color: black;
 }
 
 .collapse-link:hover {
-  text-decoration: none;
-  color: black;
+	text-decoration: none;
+	color: black;
 }
 
 table {
-  table-layout: fixed !important;
-  width: 100%;
+	table-layout: fixed !important;
+	width: 100%;
 }
 
 table td {
-  min-width: 4rem;
-  padding: 0.25rem;
-  text-align: right;
+	min-width: 4rem;
+	padding: 0.25rem;
+	text-align: right;
 }
 
 .table > tbody > tr > td:first-child {
-  text-align: left;
+	text-align: left;
 }
 
 .table .sub-row td {
-  font-size: 0.9rem;
-  text-align: right;
+	font-size: 0.9rem;
+	text-align: right;
 }
 
 .table .section-title-row {
-  font-weight: 500;
+	font-weight: 500;
 }
 
 .table-primary {
-  border-top: 2px solid black !important;
-  border-bottom: 2px solid black !important;
-  font-size: 0.9rem;
+	border-top: 2px solid black !important;
+	border-bottom: 2px solid black !important;
+	font-size: 0.9rem;
 }
