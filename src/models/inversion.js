@@ -16,6 +16,7 @@ const inversion = ({
 		cuotaDepreciacion * (anioVenta - anioInicial + 1)
 
 	return {
+		type: 'Inversiones',
 		ingAfectImp: periodo => ({
 			components: [
 				...(perdidaValorAnual

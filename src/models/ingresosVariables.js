@@ -1,5 +1,6 @@
 const ingresosVariables = ({ precioPorPeriodo, demandaPorPeriodo }) => {
 	return {
+		type: 'Ingresos Variables',
 		ingAfectImp: periodo => ({
 			components: [
 				{ name: 'Precio', value: precioPorPeriodo[periodo] },

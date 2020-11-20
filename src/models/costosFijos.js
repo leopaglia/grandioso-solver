@@ -1,5 +1,6 @@
 const costosFijos = ({ nombre, monto, porPeriodo = [] }) => {
 	return {
+		type: 'Costos Fijos',
 		ingAfectImp: () => ({
 			components: [],
 			total: 0,

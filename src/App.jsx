@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import {
 	costosFijos,
 	costosVariables,
@@ -125,8 +126,12 @@ const App = () => {
 
 	const periods = [...Array(periodos + 1)].map((_, periodoActual) => {
 		const ingAfecImp = {
-			components: actividades.flatMap(
-				act => act.ingAfectImp(periodoActual).components
+			components: actividades.reduce(
+				(acc, curr) => ({
+					...acc,
+					[curr.type]: curr.ingAfectImp(periodoActual).components,
+				}),
+				{}
 			),
 			total: actividades.reduce(
 				(acum, item) => acum + item.ingAfectImp(periodoActual).total,
@@ -138,11 +143,18 @@ const App = () => {
 		const iibb = (ventas.ingAfectImp(periodoActual).total - descuentos) * 0.015
 
 		const egAfecImp = {
-			components: [
-				{ name: 'Descuentos Ventas', value: descuentos },
-				{ name: 'IIBB', value: iibb },
-				...actividades.flatMap(act => act.egAfectImp(periodoActual).components),
-			],
+			components: actividades.reduce(
+				(acc, curr) => ({
+					...acc,
+					[curr.type]: curr.egAfectImp(periodoActual).components,
+				}),
+				{
+					'Descuentos e Ingresos Brutos': [
+						{ name: 'Descuentos Ventas', value: descuentos },
+						{ name: 'IIBB', value: iibb },
+					],
+				}
+			),
 			total: actividades.reduce(
 				(acum, item) => acum + item.egAfectImp(periodoActual).total,
 				0
@@ -150,8 +162,12 @@ const App = () => {
 		}
 
 		const gastosNoDes = {
-			components: actividades.flatMap(
-				act => act.gastosNoDes(periodoActual).components
+			components: actividades.reduce(
+				(acc, curr) => ({
+					...acc,
+					[curr.type]: curr.gastosNoDes(periodoActual).components,
+				}),
+				{}
 			),
 			total: actividades.reduce(
 				(acum, item) => acum + item.gastosNoDes(periodoActual).total,
@@ -170,15 +186,21 @@ const App = () => {
 		}
 
 		const utilNetas = {
-			components: [
-				{ name: 'Impuesto Ganancias', value: utilBrutas.total * ig },
-			],
+			components: {
+				Ganancias: [
+					{ name: 'Impuesto Ganancias', value: utilBrutas.total * ig },
+				],
+			},
 			total: utilBrutas.total - utilBrutas.total * ig,
 		}
 
 		const inversiones = {
-			components: actividades.flatMap(
-				act => act.inversion(periodoActual).components
+			components: actividades.reduce(
+				(acc, curr) => ({
+					...acc,
+					[curr.type]: curr.inversion(periodoActual).components,
+				}),
+				{}
 			),
 			total: actividades.reduce(
 				(acum, item) => acum + item.inversion(periodoActual).total,
@@ -187,8 +209,12 @@ const App = () => {
 		}
 
 		const egNoAfecImp = {
-			components: actividades.flatMap(
-				act => act.egNoAfectImp(periodoActual).components
+			components: actividades.reduce(
+				(acc, curr) => ({
+					...acc,
+					[curr.type]: curr.egNoAfectImp(periodoActual).components,
+				}),
+				{}
 			),
 			total: actividades.reduce(
 				(acum, item) => acum + item.egNoAfectImp(periodoActual).total,
@@ -222,7 +248,7 @@ const App = () => {
 		<>
 			<tr>
 				<td className="section-title-row" colSpan={periods.length + 1}>
-					{!!periods[0][keyName].components.length ? (
+					{!!Object.entries(periods[0][keyName].components).length ? (
 						<a
 							className="collapse-link"
 							data-toggle="collapse"
@@ -236,22 +262,44 @@ const App = () => {
 					)}
 				</td>
 			</tr>
-			{!!periods[0][keyName].components.length && (
+			{!!Object.entries(periods[0][keyName].components).length && (
 				<tr>
 					<td colSpan={periods.length + 1} style={{ padding: 0 }}>
 						<div className="collapse" id={`collapse-${keyName}`}>
 							<table>
 								<tbody>
-									{periods[0][keyName].components.map((comp, idx) => (
-										<tr key={`tr-${idx}`} className="sub-row">
-											<td>{comp.name}</td>
-											{periods.map((row, i) => (
-												<td key={`td-${i}`}>
-													{format(row[keyName].components[idx].value)}
-												</td>
-											))}
-										</tr>
-									))}
+									{Object.entries(periods[0][keyName].components).map(
+										([sectionName, components], idx) => (
+											<Fragment key={`frag-${idx}`}>
+												{!!components.length && (
+													<tr
+														key={`tr-${idx}`}
+														className="section-row table-secondary"
+													>
+														<td
+															className="section-title"
+															colSpan={periods.length + 1}
+														>
+															{sectionName}
+														</td>
+													</tr>
+												)}
+												{components.map((comp, idx) => (
+													<tr key={`comp-${idx}`} className="section-row">
+														<td>{comp.name}</td>
+														{periods.map((row, i) => (
+															<td key={`td-${i}`}>
+																{format(
+																	row[keyName].components[sectionName][idx]
+																		.value
+																)}
+															</td>
+														))}
+													</tr>
+												))}
+											</Fragment>
+										)
+									)}
 								</tbody>
 							</table>
 						</div>
@@ -261,7 +309,7 @@ const App = () => {
 			<tr>
 				<td className="table-primary">Total</td>
 				{periods.map((row, i) => (
-					<td className="table-primary" key={i}>
+					<td className="table-primary" key={`total-${i}`}>
 						{format(row[keyName].total)}
 					</td>
 				))}

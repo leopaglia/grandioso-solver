@@ -65,6 +65,7 @@ const credito = ({
 		periodo < anioInicial || periodo > anioInicial + cuotas
 
 	return {
+		type: 'Creditos',
 		ingAfectImp: () => ({
 			components: [],
 			total: 0,

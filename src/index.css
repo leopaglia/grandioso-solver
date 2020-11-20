@@ -47,10 +47,17 @@ table td {
 
 .table .section-title-row {
 	font-weight: 500;
+	border-bottom: 1px solid black;
 }
 
 .table-primary {
 	border-top: 2px solid black !important;
 	border-bottom: 2px solid black !important;
 	font-size: 0.9rem;
+}
+
+.section-title {
+	text-align: center;
+	font-weight: 500;
+	background-color: lightgray;
 }

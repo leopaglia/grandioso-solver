@@ -6,6 +6,7 @@ const costosVariables = ({ conceptos, demandaPorPeriodo }) => {
 	)
 
 	return {
+		type: 'Costos Variables',
 		ingAfectImp: () => ({
 			components: [],
 			total: 0,
