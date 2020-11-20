@@ -6,30 +6,11 @@ import {
 	ingresosVariables,
 } from './models'
 
+import { format } from './utils'
+
 const App = () => {
 	const periodos = 5
 	const ig = 0.35
-
-	const intlFormatter = new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		currencySign: 'accounting',
-		maximumFractionDigits: 2,
-	})
-
-	const formatter = {
-		format: x => {
-			if (x === 0) {
-				return '-'
-			}
-
-			if (typeof x === 'string') {
-				return x
-			}
-
-			return intlFormatter.format(x)
-		},
-	}
 
 	const prestamoInicial = credito({
 		nombre: 'Prestamo Inicial',
@@ -266,7 +247,7 @@ const App = () => {
 											<td>{comp.name}</td>
 											{periods.map((row, i) => (
 												<td key={`td-${i}`}>
-													{formatter.format(row[keyName].components[idx].value)}
+													{format(row[keyName].components[idx].value)}
 												</td>
 											))}
 										</tr>
@@ -281,7 +262,7 @@ const App = () => {
 				<td className="table-primary">Total</td>
 				{periods.map((row, i) => (
 					<td className="table-primary" key={i}>
-						{formatter.format(row[keyName].total)}
+						{format(row[keyName].total)}
 					</td>
 				))}
 			</tr>
