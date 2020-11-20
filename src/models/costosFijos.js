@@ -8,10 +8,14 @@ const costosFijos = ({ nombre, monto, porPeriodo = [] }) => {
 			components: [
 				{
 					name: nombre,
-					value: porPeriodo.length ? porPeriodo[periodo] || 0 : monto,
+					value: porPeriodo.length
+						? porPeriodo[periodo] || 0
+						: periodo > 0
+						? monto
+						: 0,
 				},
 			],
-			total: porPeriodo.length ? porPeriodo[periodo] : monto,
+			total: porPeriodo.length ? porPeriodo[periodo] : periodo > 0 ? monto : 0,
 		}),
 		egNoAfectImp: () => ({
 			components: [],

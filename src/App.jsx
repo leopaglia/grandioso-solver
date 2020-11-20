@@ -97,7 +97,7 @@ const App = () => {
 
 	const marketing = costosFijos({
 		nombre: 'Marketing',
-		porPeriodo: [800000, 800000, 600000, 600000, 500000],
+		porPeriodo: [0, 800000, 800000, 600000, 600000, 500000],
 	})
 
 	const cv = costosVariables({
@@ -142,7 +142,7 @@ const App = () => {
 		ventas,
 	]
 
-	const periods = [...Array(periodos)].map((_, periodoActual) => {
+	const periods = [...Array(periodos + 1)].map((_, periodoActual) => {
 		const ingAfecImp = {
 			components: actividades.flatMap(
 				act => act.ingAfectImp(periodoActual).components
