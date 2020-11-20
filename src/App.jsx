@@ -306,10 +306,7 @@ const App = () => {
 					<Row name="Utilidades Brutas" keyName="utilBrutas" />
 					<Row name="Utilidades Netas" keyName="utilNetas" />
 					<Row name="Inversiones" keyName="inversiones" />
-					<Row
-						name="Egresos No Afectados por Impuestos"
-						keyName="egNoAfecImp"
-					/>
+					<Row name="Egresos No Afectados a Impuestos" keyName="egNoAfecImp" />
 					<Row name="Flujo de Fondos" keyName="ff" />
 				</tbody>
 			</table>
