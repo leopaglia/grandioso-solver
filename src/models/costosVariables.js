@@ -14,7 +14,7 @@ const costosVariables = ({ conceptos, demandaPorPeriodo }) => {
 			components: [
 				{
 					name: 'Costo total x Prod',
-					value: periodo !== 0 ? costoTotalPorProducto : 0,
+					value: periodo > 0 ? costoTotalPorProducto : 0,
 				},
 				{ name: 'Dem total x prod', value: demandaPorPeriodo[periodo] },
 			],
